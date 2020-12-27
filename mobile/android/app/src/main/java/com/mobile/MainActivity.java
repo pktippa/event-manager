@@ -1,4 +1,4 @@
-package com.mobile;
+package com.pktippa.eventmanager.mobile;
 
 import com.facebook.react.ReactActivity;
 
