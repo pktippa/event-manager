@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import {
   SafeAreaView,
@@ -8,11 +9,16 @@ import {
 import {Provider} from 'react-redux';
 import {store} from './src/store';
 import EventComponent from './src/components/event.component';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
 
 
 const App = () => {
   return (
     <>
+    <NavigationContainer>
+      
       <StatusBar barStyle="dark-content" />
       <Provider store={store}>
         <SafeAreaView>
@@ -20,11 +26,20 @@ const App = () => {
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
             <View style={styles.body}>
+              <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={EventComponent}
+            options={{ title: 'Welcome' }}
+          />
+          <Stack.Screen name="Profile" component={EventComponent} />
+        </Stack.Navigator>
               <EventComponent></EventComponent>
             </View>
           </ScrollView>
         </SafeAreaView>
       </Provider>
+      </NavigationContainer>
     </>
   );
 };
