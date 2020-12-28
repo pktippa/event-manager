@@ -17,6 +17,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {store} from '../store';
 import {ADD_EVENT, Event} from '../store/event/types';
 import {RootState} from '../store/reducer';
+import {addEvent} from '../store/event/action';
 
 declare const global: {HermesInternal: null | {}};
 
@@ -25,7 +26,7 @@ type Props = PropsFromRedux & {
 };
 
 const EventComponent = (props: Props) => {
-  const {event, addEvent} = props;
+  const {event} = props;
   console.log('events ', event);
   const [addEventModal, setAddEventModal] = useState(false);
   const dispatch = useDispatch();
@@ -55,9 +56,11 @@ const EventComponent = (props: Props) => {
             <View style={styles.body}>
               <View style={styles.sectionContainer}>
                 <View style={styles.button}>
-                  <Button
-                    title="Add Event"
-                    onPress={onShowAddEventModal}></Button>
+                  <TouchableHighlight
+                    style={styles.openButton}
+                    onPress={onShowAddEventModal}>
+                    <Text style={styles.textStyle}>Add Event</Text>
+                  </TouchableHighlight>
                   <AddEventComponent
                     isVisible={addEventModal}
                     onSubmit={onModalAddEventSubmit}
@@ -94,45 +97,6 @@ interface AddEventProps {
   onCancel: () => void;
 }
 const AddEventComponent = (props: AddEventProps) => {
-  const styles = StyleSheet.create({
-    centeredView: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 22,
-    },
-    modalView: {
-      margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 20,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    openButton: {
-      backgroundColor: '#F194FF',
-      borderRadius: 20,
-      padding: 10,
-      elevation: 2,
-    },
-    textStyle: {
-      color: 'white',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
-    },
-  });
-
   const {isVisible, onSubmit, onCancel} = props;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -145,17 +109,17 @@ const AddEventComponent = (props: AddEventProps) => {
         onRequestClose={onCancel}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
+            <Text style={styles.modalText}>Add Event</Text>
             <TextInput
               style={{height: 40}}
               placeholder="Event name"
               onChangeText={(text) => setName(text)}
-              defaultValue={name}></TextInput>
+              ></TextInput>
             <TextInput
               style={{height: 40}}
               placeholder="Event Description"
               onChangeText={(text) => setDescription(text)}
-              defaultValue={description}></TextInput>
+              ></TextInput>
 
             <TouchableHighlight
               style={{...styles.openButton, backgroundColor: '#2196F3'}}
@@ -227,16 +191,48 @@ const styles = StyleSheet.create({
     height: 100,
     width: 200,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: '#F194FF',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
 });
 
 const mapStateToProps = (state: RootState) => ({
   event: state.event,
 });
 
-const mapDispatchToProps = {
-  addEvent: (event: Event) => ({type: ADD_EVENT, payload: event}),
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 export default connector(EventComponent);
