@@ -1,4 +1,4 @@
-import { ADD_EVENT, ADD_ITEM, EventActionTypes, EventState, GET_EVENTS } from './types';
+import { ADD_EVENT, ADD_ITEM, EventActionTypes, EventState, GET_EVENTS, UPDATE_ITEM } from './types';
 
 const initialState: EventState = {
     events: []
@@ -14,10 +14,20 @@ const eventReducer = (state = initialState, action: EventActionTypes) => {
           events: [...state.events, action.payload]
       };
     case ADD_ITEM:
+      let aEvents = state.events;
+      const {eventName: aEvName, name: aName, cost: aCost} = action.payload;
+      let aEvent = state.events.find(item => item.name === aEvName);
+      aEvent?.items?.push({name: aName, cost: aCost});
+      return { 
+        ...state,
+        events: aEvents,
+      }
+    case UPDATE_ITEM:
       let events = state.events;
       const {eventName, name, cost} = action.payload;
       let event = state.events.find(item => item.name === eventName);
-      event?.items?.push({name, cost});
+      const item = event?.items?.find(i => i.name === name);
+      item!.cost = cost;
       return { 
         ...state,
         events,

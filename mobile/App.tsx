@@ -20,7 +20,7 @@ const App = () => {
     <>
     <NavigationContainer>
       
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" />
       <Provider store={store}>
       <Stack.Navigator>
           <Stack.Screen

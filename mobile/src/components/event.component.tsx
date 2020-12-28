@@ -16,7 +16,7 @@ import {
 import {Provider, connect, ConnectedProps, useDispatch} from 'react-redux';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {store} from '../store';
-import {ADD_EVENT, Event} from '../store/event/types';
+import {ADD_EVENT, Event, Item} from '../store/event/types';
 import {RootState} from '../store/reducer';
 import {addEvent} from '../store/event/action';
 
@@ -25,8 +25,8 @@ declare const global: {HermesInternal: null | {}};
 type Props = PropsFromRedux & {
   // style or dispatcher
   navigation: {
-    navigate: (name: string) => void
-  }
+    navigate: (name: string, meta: {items: Item[]; eventName: string}) => void;
+  };
 };
 
 const EventComponent = (props: Props) => {
@@ -62,9 +62,7 @@ const EventComponent = (props: Props) => {
                 <View style={styles.button}>
                   <TouchableHighlight
                     style={styles.openButton}
-                    // onPress={() => {navigation.navigate('Profile')}}
-                    onPress={onShowAddEventModal}
-                    >
+                    onPress={onShowAddEventModal}>
                     <Text style={styles.textStyle}>Add Event</Text>
                   </TouchableHighlight>
                   <AddEventComponent
@@ -78,14 +76,20 @@ const EventComponent = (props: Props) => {
                 <View style={styles.container}>
                   <FlatList
                     data={event['events']}
-                    renderItem={({item}) => (
-                      <TouchableOpacity onPress={() => navigation.navigate('ItemList')}>
-                      <View>
-                        <Text style={styles.item}>Name: {item.name}</Text>
-                        <Text style={styles.item}>
-                          Description: {item.description}
-                        </Text>
-                      </View>
+                    renderItem={({item}: {item: Event}) => (
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('ItemList', {
+                            items: item.items,
+                            eventName: item.name,
+                          })
+                        }>
+                        <View>
+                          <Text style={styles.item}>Name: {item.name}</Text>
+                          <Text style={styles.item}>
+                            Description: {item.description}
+                          </Text>
+                        </View>
                       </TouchableOpacity>
                     )}
                   />
@@ -121,13 +125,11 @@ const AddEventComponent = (props: AddEventProps) => {
             <TextInput
               style={{height: 40}}
               placeholder="Event name"
-              onChangeText={(text) => setName(text)}
-              ></TextInput>
+              onChangeText={(text) => setName(text)}></TextInput>
             <TextInput
               style={{height: 40}}
               placeholder="Event Description"
-              onChangeText={(text) => setDescription(text)}
-              ></TextInput>
+              onChangeText={(text) => setDescription(text)}></TextInput>
 
             <TouchableHighlight
               style={{...styles.openButton, backgroundColor: '#2196F3'}}
@@ -137,7 +139,7 @@ const AddEventComponent = (props: AddEventProps) => {
             <TouchableHighlight
               style={styles.openButton}
               onPress={() => {
-                onSubmit({name, description});
+                onSubmit({name, description, items: []});
               }}>
               <Text style={styles.textStyle}>Submit</Text>
             </TouchableHighlight>
