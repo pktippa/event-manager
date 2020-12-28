@@ -11,6 +11,7 @@ import {store} from './src/store';
 import EventComponent from './src/components/event.component';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import ItemListComponent from './src/components/item-list.component';
 const Stack = createStackNavigator();
 
 
@@ -21,23 +22,14 @@ const App = () => {
       
       <StatusBar barStyle="dark-content" />
       <Provider store={store}>
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <View style={styles.body}>
-              <Stack.Navigator>
+      <Stack.Navigator>
           <Stack.Screen
             name="Home"
             component={EventComponent}
-            options={{ title: 'Welcome' }}
+            options={{ title: 'Events' }}
           />
-          <Stack.Screen name="Profile" component={EventComponent} />
+          <Stack.Screen name="ItemList" component={ItemListComponent} options={{ title: 'Items' }} />
         </Stack.Navigator>
-              <EventComponent></EventComponent>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
       </Provider>
       </NavigationContainer>
     </>

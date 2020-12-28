@@ -11,6 +11,7 @@ import {
   Modal,
   TouchableHighlight,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import {Provider, connect, ConnectedProps, useDispatch} from 'react-redux';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -23,10 +24,13 @@ declare const global: {HermesInternal: null | {}};
 
 type Props = PropsFromRedux & {
   // style or dispatcher
+  navigation: {
+    navigate: (name: string) => void
+  }
 };
 
 const EventComponent = (props: Props) => {
-  const {event} = props;
+  const {event, navigation} = props;
   console.log('events ', event);
   const [addEventModal, setAddEventModal] = useState(false);
   const dispatch = useDispatch();
@@ -58,7 +62,9 @@ const EventComponent = (props: Props) => {
                 <View style={styles.button}>
                   <TouchableHighlight
                     style={styles.openButton}
-                    onPress={onShowAddEventModal}>
+                    // onPress={() => {navigation.navigate('Profile')}}
+                    onPress={onShowAddEventModal}
+                    >
                     <Text style={styles.textStyle}>Add Event</Text>
                   </TouchableHighlight>
                   <AddEventComponent
@@ -73,12 +79,14 @@ const EventComponent = (props: Props) => {
                   <FlatList
                     data={event['events']}
                     renderItem={({item}) => (
+                      <TouchableOpacity onPress={() => navigation.navigate('ItemList')}>
                       <View>
                         <Text style={styles.item}>Name: {item.name}</Text>
                         <Text style={styles.item}>
                           Description: {item.description}
                         </Text>
                       </View>
+                      </TouchableOpacity>
                     )}
                   />
                 </View>
