@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
+  container: {
+    flex: 1,
+    paddingTop: 22,
+  },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
@@ -54,8 +58,17 @@ const styles = StyleSheet.create({
     height: 50,
   },
   addAndTotalFlex: {
-    height:60
-  }
+    height: 60,
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
 });
 type Props = {
   event: EventState;
@@ -78,8 +91,8 @@ const ItemListComponent = (props: Props) => {
   const dispatch = useDispatch();
   const totalCost = ev?.items.reduce((acc, item) => acc + item.cost, 0);
   const onUpdateCost = (item: Item, newCost: string) => {
-    dispatch(updateItem({name: item.name, cost: Number(newCost), eventName}))
-  }
+    dispatch(updateItem({name: item.name, cost: Number(newCost), eventName}));
+  };
   return (
     <View>
       {/* <View style={{flex: 1, flexDirection: 'row', height: 100}}> */}
@@ -105,21 +118,19 @@ const ItemListComponent = (props: Props) => {
           setAddItemModal(false);
           dispatch(addItem({name, cost, eventName}));
         }}></AddItemComponent>
+
       <FlatList
         data={ev?.items}
         renderItem={({item}) => (
-          <View>
+          <View style={styles.item}>
             <Text>Name : {item.name}</Text>
             <Text>Cost</Text>
             <TextInput
-              style={{height: 40}}
-              keyboardType={"number-pad"}
+              style={{height: 40, backgroundColor: 'pink'}}
+              keyboardType={'number-pad'}
               placeholder="Item name"
               onChangeText={(text) => onUpdateCost(item, text)}
-              defaultValue={item.cost.toString()}
-              >
-
-              </TextInput>
+              defaultValue={item.cost.toString()}></TextInput>
           </View>
         )}></FlatList>
     </View>
