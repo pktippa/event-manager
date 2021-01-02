@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {Modal, Button, Text, TextInput, List, Portal} from 'react-native-paper';
+import {Modal, Button, Text, TextInput, List, Portal, withTheme} from 'react-native-paper';
 import {connect, useDispatch} from 'react-redux';
 import {addItem, updateItem} from '../store/item/action';
 
 const ItemListComponent = (props) => {
   const [addItemModal, setAddItemModal] = useState(false);
-  const {route, event} = props;
+  const {route, event, theme} = props;
   const {eventName} = route.params;
   const ev = event.events.find((e) => e.name === eventName);
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const ItemListComponent = (props) => {
   return (
     <View>
       <Button mode="contained" onPress={() => setAddItemModal(true)}>Add</Button>
-      <Text>Total Cost : {totalCost}</Text>
+      <Text style={{color: theme.colors.primary }}>Total Cost : {totalCost}</Text>
       <AddItemComponent
         isVisible={addItemModal}
         onCancel={() => {
@@ -83,4 +83,4 @@ const mapStateToProps = (state) => ({
 });
 
 const connector = connect(mapStateToProps);
-export default connector(ItemListComponent);
+export default connector(withTheme(ItemListComponent));
