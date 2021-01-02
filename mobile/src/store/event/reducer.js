@@ -1,10 +1,10 @@
-import { ADD_EVENT, ADD_ITEM, EventActionTypes, EventState, GET_EVENTS, UPDATE_ITEM } from './types';
+import { ADD_EVENT, ADD_ITEM, GET_EVENTS, UPDATE_ITEM } from './types';
 
-const initialState: EventState = {
+const initialState = {
     events: []
 }
 
-const eventReducer = (state = initialState, action: EventActionTypes) => {
+const eventReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_EVENTS:
       return state.events;
@@ -27,7 +27,7 @@ const eventReducer = (state = initialState, action: EventActionTypes) => {
       const {eventName, name, cost} = action.payload;
       let event = state.events.find(item => item.name === eventName);
       const item = event?.items?.find(i => i.name === name);
-      item!.cost = cost;
+      item.cost = cost;
       return { 
         ...state,
         events,

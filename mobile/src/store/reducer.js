@@ -4,5 +4,4 @@ const rootReducer= combineReducers({
     event: eventReducer
 });
 
-export type RootState = ReturnType<typeof rootReducer>
 export default rootReducer;

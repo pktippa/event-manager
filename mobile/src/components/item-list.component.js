@@ -8,10 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {connect, ConnectedProps, useDispatch} from 'react-redux';
-import {EventState, Item} from '../store/event/types';
+import {connect, useDispatch} from 'react-redux';
 import {addItem, updateItem} from '../store/item/action';
-import {RootState} from '../store/reducer';
 
 const styles = StyleSheet.create({
   openButton: {
@@ -70,27 +68,14 @@ const styles = StyleSheet.create({
     height: 44,
   },
 });
-type Props = {
-  event: EventState;
-  // style or dispatcher
-  route: {
-    params: {
-      items: Item[];
-      eventName: string;
-    };
-  };
-  navigation: {
-    navigate: (name: string, meta: {items: Item[]; eventName: string}) => void;
-  };
-};
-const ItemListComponent = (props: Props) => {
+const ItemListComponent = (props) => {
   const [addItemModal, setAddItemModal] = useState(false);
   const {route, event} = props;
   const {eventName} = route.params;
   const ev = event.events.find((e) => e.name === eventName);
   const dispatch = useDispatch();
   const totalCost = ev?.items.reduce((acc, item) => acc + item.cost, 0);
-  const onUpdateCost = (item: Item, newCost: string) => {
+  const onUpdateCost = (item, newCost) => {
     dispatch(updateItem({name: item.name, cost: Number(newCost), eventName}));
   };
   return (
@@ -113,7 +98,7 @@ const ItemListComponent = (props: Props) => {
         onCancel={() => {
           setAddItemModal(false);
         }}
-        onSubmit={(item: Item) => {
+        onSubmit={(item) => {
           const {cost, name} = item;
           setAddItemModal(false);
           dispatch(addItem({name, cost, eventName}));
@@ -137,12 +122,7 @@ const ItemListComponent = (props: Props) => {
   );
 };
 
-interface AddItemProps {
-  isVisible: boolean;
-  onSubmit: (item: Item) => void;
-  onCancel: () => void;
-}
-const AddItemComponent = (props: AddItemProps) => {
+const AddItemComponent = (props) => {
   const {isVisible, onSubmit, onCancel} = props;
   const [name, setName] = useState('');
   const [cost, setCost] = useState(0);
@@ -185,10 +165,9 @@ const AddItemComponent = (props: AddItemProps) => {
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state) => ({
   event: state.event,
 });
 
 const connector = connect(mapStateToProps);
-type PropsFromRedux = ConnectedProps<typeof connector>;
 export default connector(ItemListComponent);

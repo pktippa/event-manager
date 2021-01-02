@@ -6,30 +6,17 @@ import {
   View,
   Text,
   StatusBar,
-  Button,
-  TextInput,
-  Modal,
   TouchableHighlight,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {Provider, connect, ConnectedProps, useDispatch} from 'react-redux';
+import {TextInput, Button, Modal, Portal} from 'react-native-paper';
+import {Provider, connect, useDispatch} from 'react-redux';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {store} from '../store';
-import {ADD_EVENT, Event, Item} from '../store/event/types';
-import {RootState} from '../store/reducer';
 import {addEvent} from '../store/event/action';
 
-declare const global: {HermesInternal: null | {}};
-
-type Props = PropsFromRedux & {
-  // style or dispatcher
-  navigation: {
-    navigate: (name: string, meta: {items: Item[]; eventName: string}) => void;
-  };
-};
-
-const EventComponent = (props: Props) => {
+const EventComponent = (props) => {
   const {event, navigation} = props;
   console.log('events ', event);
   const [addEventModal, setAddEventModal] = useState(false);
@@ -39,7 +26,7 @@ const EventComponent = (props: Props) => {
     setAddEventModal(true);
   };
 
-  const onModalAddEventSubmit = (event: Event) => {
+  const onModalAddEventSubmit = (event) => {
     setAddEventModal(false);
     const {name, description} = event;
     if (name && description) {
@@ -76,7 +63,7 @@ const EventComponent = (props: Props) => {
                 <View style={styles.container}>
                   <FlatList
                     data={event['events']}
-                    renderItem={({item}: {item: Event}) => (
+                    renderItem={({item}) => (
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate('ItemList', {
@@ -103,32 +90,24 @@ const EventComponent = (props: Props) => {
   );
 };
 
-interface AddEventProps {
-  isVisible: boolean;
-  onSubmit: (event: Event) => void;
-  onCancel: () => void;
-}
-const AddEventComponent = (props: AddEventProps) => {
+const AddEventComponent = (props) => {
   const {isVisible, onSubmit, onCancel} = props;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   return (
     <View style={styles.centeredView}>
+      <Portal>
       <Modal
-        animationType="slide"
-        transparent={true}
         visible={isVisible}
-        onRequestClose={onCancel}>
+        onDismiss={onCancel}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Add Event</Text>
+            <Text>Add Event</Text>
             <TextInput
-              style={{height: 40}}
-              placeholder="Event name"
+              label="Event name"
               onChangeText={(text) => setName(text)}></TextInput>
             <TextInput
-              style={{height: 40}}
-              placeholder="Event Description"
+              label="Event Description"
               onChangeText={(text) => setDescription(text)}></TextInput>
 
             <TouchableHighlight
@@ -136,6 +115,7 @@ const AddEventComponent = (props: AddEventProps) => {
               onPress={onCancel}>
               <Text style={styles.textStyle}>Cancel</Text>
             </TouchableHighlight>
+            <Button  mode="contained" onPress={onCancel}>Cancel</Button>
             <TouchableHighlight
               style={styles.openButton}
               onPress={() => {
@@ -146,6 +126,7 @@ const AddEventComponent = (props: AddEventProps) => {
           </View>
         </View>
       </Modal>
+      </Portal>
     </View>
   );
 };
@@ -239,10 +220,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state) => ({
   event: state.event,
 });
 
 const connector = connect(mapStateToProps);
-type PropsFromRedux = ConnectedProps<typeof connector>;
 export default connector(EventComponent);
